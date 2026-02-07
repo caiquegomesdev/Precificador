@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precificador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Core Colors */
+            --primary: #0A0E27;
+            --primary-light: #1A1F3A;
+            --accent: #FF6B35;
+            --accent-light: #FF8C61;
+            --success: #00D9A3;
+            --warning: #FFB800;
+            --danger: #FF3860;
+            
+            /* Neutrals */
+            --white: #FFFFFF;
+            --gray-50: #F8F9FA;
+            --gray-100: #E9ECEF;
+            --gray-200: #DEE2E6;
+            --gray-300: #CED4DA;
+            --gray-400: #ADB5BD;
+            --gray-500: #6C757D;
+            --gray-600: #495057;
+            --gray-700: #343A40;
+            --gray-800: #212529;
+            
+            /* Spacing */
+            --space-xs: 0.5rem;
+            --space-sm: 1rem;
+            --space-md: 1.5rem;
+            --space-lg: 2rem;
+            --space-xl: 3rem;
+            
+            /* Typography */
+            --font-display: 'Crimson Pro', serif;
+            --font-body: 'DM Sans', sans-serif;
+            
+            /* Effects */
+            --shadow-sm: 0 1px 3px rgba(10, 14, 39, 0.08);
+            --shadow-md: 0 4px 12px rgba(10, 14, 39, 0.12);
+            --shadow-lg: 0 12px 32px rgba(10, 14, 39, 0.16);
+            --shadow-xl: 0 20px 48px rgba(10, 14, 39, 0.24);
+            
+            --radius-sm: 6px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: linear-gradient(135deg, #0A0E27 0%, #1A1F3A 100%);
+            color: var(--gray-700);
+            line-height: 1.6;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 107, 53, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 217, 163, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            animation: bgPulse 15s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .app-container {
+            position: relative;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: var(--space-lg);
+        }
+
+        /* Header */
+        .app-header {
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .app-logo {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--space-sm);
+            letter-spacing: -2px;
+        }
+
+        .app-tagline {
+            color: var(--gray-100);
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* Marketplace Selector */
+        .marketplace-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-xl);
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .section-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: var(--space-lg);
+            position: relative;
+            padding-bottom: var(--space-sm);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 2px;
+        }
+
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--space-md);
+        }
+
+        .marketplace-card {
+            background: var(--white);
+            border: 2px solid var(--gray-100);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .marketplace-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 107, 53, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .marketplace-card:hover::before {
+            left: 100%;
+        }
+
+        .marketplace-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .marketplace-card.active {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-color: var(--accent);
+            color: var(--white);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .marketplace-icon {
+            font-size: 3rem;
+            margin-bottom: var(--space-sm);
+            display: block;
+        }
+
+        .marketplace-name {
+            font-weight: 700;
+            font-size: 1.125rem;
+            margin-bottom: var(--space-xs);
+        }
+
+        .marketplace-commission {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .marketplace-card.active .marketplace-commission {
+            opacity: 1;
+            font-weight: 500;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-xl);
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .input-label {
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .input-required {
+            color: var(--danger);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-prefix {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray-400);
+            font-weight: 600;
+            pointer-events: none;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 1rem;
+            padding-left: 3rem;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-family: var(--font-body);
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--white);
+            box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.1);
+        }
+
+        .input-field.error {
+            border-color: var(--danger);
+        }
+
+        /* Advanced Options */
+        .advanced-toggle {
+            margin-bottom: var(--space-lg);
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn:hover {
+            color: var(--accent-light);
+            transform: translateX(4px);
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-btn.active .toggle-icon {
+            transform: rotate(90deg);
+        }
+
+        .advanced-options {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .advanced-options.open {
+            max-height: 1000px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: var(--font-body);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+            transform: translateY(-2px);
+        }
+
+        /* Results Section */
+        .results-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-lg);
+            box-shadow: var(--shadow-xl);
+            display: none;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .results-section.visible {
+            display: block;
+        }
+
+        .results-hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            text-align: center;
+            margin-bottom: var(--space-xl);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.15) 0%, transparent 70%);
+            animation: heroGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-10%, -10%); }
+        }
+
+        .results-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .results-label {
+            color: var(--gray-100);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: var(--space-sm);
+            opacity: 0.9;
+        }
+
+        .results-value {
+            font-family: var(--font-display);
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: var(--space-sm);
+            text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-subtitle {
+            color: var(--gray-100);
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Results Grid */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--space-lg);
+            margin-bottom: var(--space-xl);
+        }
+
+        .result-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            border-left: 4px solid var(--accent);
+        }
+
+        .result-card-title {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--primary);
+            margin-bottom: var(--space-md);
+            display: flex;
+            align-items: center;
+            gap: var(--space-xs);
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-sm) 0;
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .result-row:last-child {
+            border-bottom: none;
+        }
+
+        .result-row-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .result-row-value {
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--primary);
+        }
+
+        .result-row-value.positive {
+            color: var(--success);
+        }
+
+        .result-row-value.negative {
+            color: var(--danger);
+        }
+
+        .result-row-value.warning {
+            color: var(--warning);
+        }
+
+        /* Breakdown Table */
+        .breakdown-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: var(--space-lg);
+        }
+
+        .breakdown-table th,
+        .breakdown-table td {
+            padding: var(--space-sm);
+            text-align: left;
+        }
+
+        .breakdown-table thead {
+            background: var(--primary);
+            color: var(--white);
+        }
+
+        .breakdown-table th {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .breakdown-table tbody tr {
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .breakdown-table tbody tr:hover {
+            background: var(--gray-50);
+        }
+
+        .breakdown-table td {
+            font-size: 0.875rem;
+        }
+
+        .breakdown-total {
+            background: var(--gray-100);
+            font-weight: 700;
+        }
+
+        /* Product List */
+        .product-list-section {
+            background: var(--white);
+            border-radius: var(--radius-xl);
+            padding: var(--space-xl);
+            box-shadow: var(--shadow-xl);
+            display: none;
+        }
+
+        .product-list-section.visible {
+            display: block;
+        }
+
+        .product-item {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: var(--space-md);
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .product-item:hover {
+            background: var(--white);
+            box-shadow: var(--shadow-md);
+        }
+
+        .product-icon {
+            font-size: 2rem;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-xs);
+        }
+
+        .product-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.125rem;
+        }
+
+        .product-details {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+        }
+
+        .product-price {
+            font-family: var(--font-display);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .product-remove {
+            background: var(--danger);
+            color: var(--white);
+            border: none;
+            padding: var(--space-sm) var(--space-md);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .product-remove:hover {
+            background: #E32850;
+            transform: scale(1.05);
+        }
+
+        .product-total {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            border-radius: var(--radius-lg);
+            padding: var(--space-lg);
+            margin-top: var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-total-label {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .product-total-value {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .app-logo {
+                font-size: 2.5rem;
+            }
+
+            .app-tagline {
+                font-size: 1rem;
+            }
+
+            .marketplace-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .input-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .results-value {
+                font-size: 2.5rem;
+            }
+
+            .product-item {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+
+        /* Loading State */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 39, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(255, 107, 53, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--white);
+            padding: var(--space-md) var(--space-lg);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-md);
+            transform: translateY(200%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10000;
+        }
+
+        .toast.visible {
+            transform: translateY(0);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        .toast-message {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <div class="toast" id="toast">
+        <span class="toast-icon" id="toastIcon"></span>
+        <span class="toast-message" id="toastMessage"></span>
+    </div>
+
+    <div class="app-container">
+        <header class="app-header">
+            <h1 class="app-logo">Precificador</h1>
+            <p class="app-tagline">-----------------------</p>
+        </header>
+
+        <!-- Marketplace Selection -->
+        <section class="marketplace-section">
+            <h2 class="section-title">Selecione o Marketplace</h2>
+            <div class="marketplace-grid" id="marketplaceGrid"></div>
+        </section>
+
+        <!-- Calculator -->
+        <section class="calculator-section">
+            <h2 class="section-title">Dados do Produto</h2>
+            
+            <div class="input-grid">
+                <div class="input-group">
+                    <label class="input-label">
+                        Nome do Produto <span class="input-required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <input type="text" class="input-field" id="productName" placeholder="Ex: Controlador ESP-TM2">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">
+                        Custo do Produto <span class="input-required">*</span>
+                    </label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">R$</span>
+                        <input type="number" class="input-field" id="productCost" placeholder="0,00" step="0.01" min="0">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Quantidade</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">Qtd</span>
+                        <input type="number" class="input-field" id="quantity" placeholder="1" value="1" min="1">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Margem de Lucro Desejada</label>
+                    <div class="input-wrapper">
+                        <span class="input-prefix">%</span>
+                        <input type="number" class="input-field" id="profitMargin" placeholder="25" value="25" step="0.1" min="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="advanced-toggle">
+                <button class="toggle-btn" id="advancedToggle">
+                    <span class="toggle-icon">▶</span>
+                    Opções Avançadas
+                </button>
+            </div>
+
+            <div class="advanced-options" id="advancedOptions">
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label class="input-label">Custo de Frete</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">R$</span>
+                            <input type="number" class="input-field" id="shippingCost" placeholder="0,00" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">IPI (%)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">%</span>
+                            <input type="number" class="input-field" id="ipi" placeholder="0" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">ICMS Entrada (%)</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">%</span>
+                            <input type="number" class="input-field" id="icmsIn" placeholder="0" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Substituição Tributária</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">R$</span>
+                            <input type="number" class="input-field" id="st" placeholder="0,00" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">Custos Operacionais</label>
+                        <div class="input-wrapper">
+                            <span class="input-prefix">R$</span>
+                            <input type="number" class="input-field" id="operationalCosts" placeholder="0,00" value="0" step="0.01" min="0">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label class="input-label">IRPJ e CSLL</label>
+                        <div class="input-wrapper">
+                            <select class="input-field" id="taxRegime" style="padding-left: 1rem;">
+                                <option value="nao">Não Incide</option>
+                                <option value="sim">Incide (24%)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="calculateBtn">
+                    <span style="position: relative; z-index: 1;">Calcular Preço</span>
+                </button>
+                <button class="btn btn-secondary" id="clearBtn">
+                    <span style="position: relative; z-index: 1;">Limpar Campos</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Results -->
+        <section class="results-section" id="resultsSection">
+            <h2 class="section-title">Análise de Precificação</h2>
+            
+            <div class="results-hero">
+                <div class="results-hero-content">
+                    <div class="results-label">Preço Sugerido de Venda</div>
+                    <div class="results-value" id="finalPrice">R$ 0,00</div>
+                    <div class="results-subtitle" id="marketplaceName">Marketplace não selecionado</div>
+                </div>
+            </div>
+
+            <div class="results-grid">
+                <div class="result-card">
+                    <div class="result-card-title">📊 Estrutura de Custos</div>
+                    <div class="result-row">
+                        <span class="result-row-label">Custo do Produto</span>
+                        <span class="result-row-value" id="costProduct">R$ 0,00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-row-label">Custo Total (com taxas)</span>
+                        <span class="result-row-value" id="totalCost">R$ 0,00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-row-label">Custo Unitário</span>
+                        <span class="result-row-value" id="unitCost">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-card-title">💳 Taxas do Marketplace</div>
+                    <div class="result-row">
+                        <span class="result-row-label">Comissão</span>
+                        <span class="result-row-value" id="commission">R$ 0,00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-row-label">Impostos sobre Venda</span>
+                        <span class="result-row-value" id="salesTaxes">R$ 0,00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-row-label">Total de Taxas</span>
+                        <span class="result-row-value warning" id="totalFees">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <div class="result-card">
+                    <div class="result-card-title">💰 Lucratividade</div>
+                    <div class="result-row">
+                        <span class="result-row-label">Lucro Bruto</span>
+                        <span class="result-row-value positive" id="grossProfit">R$ 0,00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-row-label">Lucro Líquido</span>
+                        <span class="result-row-value positive" id="netProfit">R$ 0,00</span>
+                    </div>
+                    <div class="result-row">
+                        <span class="result-row-label">Margem Líquida</span>
+                        <span class="result-row-value positive" id="netMargin">0,00%</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title" style="margin-top: var(--space-xl);">Detalhamento Completo</h3>
+            <table class="breakdown-table">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Descrição</th>
+                        <th style="text-align: right;">Taxa</th>
+                        <th style="text-align: right;">Valor</th>
+                    </tr>
+                </thead>
+                <tbody id="breakdownTableBody">
+                </tbody>
+            </table>
+
+            <div class="action-buttons" style="margin-top: var(--space-xl);">
+                <button class="btn btn-primary" id="addProductBtn">
+                    <span style="position: relative; z-index: 1;">➕ Adicionar à Lista</span>
+                </button>
+                <button class="btn btn-secondary" id="newCalculationBtn">
+                    <span style="position: relative; z-index: 1;">🔄 Nova Simulação</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Product List -->
+        <section class="product-list-section" id="productListSection">
+            <h2 class="section-title">Lista de Produtos</h2>
+            <div id="productList"></div>
+            <div class="product-total">
+                <span class="product-total-label">Valor Total dos Produtos</span>
+                <span class="product-total-value" id="totalValue">R$ 0,00</span>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Configurações de Marketplaces
+        const MARKETPLACES = {
+            mercadolivre: {
+                id: 'mercadolivre',
+                name: 'Mercado Livre',
+                icon: '🛒',
+                commission: 0.165,
+                icmsSaida: 0.056,
+                pis: 0.0165,
+                cofins: 0.076
+            },
+            amazon: {
+                id: 'amazon',
+                name: 'Amazon',
+                icon: '📦',
+                commission: 0.15,
+                icmsSaida: 0.056,
+                pis: 0.0165,
+                cofins: 0.076
+            },
+            shopee: {
+                id: 'shopee',
+                name: 'Shopee',
+                icon: '🛍️',
+                commission: 0.12,
+                icmsSaida: 0.056,
+                pis: 0.0165,
+                cofins: 0.076
+            },
+            magalu: {
+                id: 'magalu',
+                name: 'Magazine Luiza',
+                icon: '🏪',
+                commission: 0.18,
+                icmsSaida: 0.056,
+                pis: 0.0165,
+                cofins: 0.076
+            },
+            americanas: {
+                id: 'americanas',
+                name: 'Americanas',
+                icon: '🏬',
+                commission: 0.17,
+                icmsSaida: 0.056,
+                pis: 0.0165,
+                cofins: 0.076
+            },
+            lojaintegrada: {
+                id: 'lojaintegrada',
+                name: 'Loja Própria',
+                icon: '💻',
+                commission: 0.04,
+                icmsSaida: 0.056,
+                pis: 0.0165,
+                cofins: 0.076
+            }
+        };
+
+        // Estado da aplicação
+        let selectedMarketplace = null;
+        let productList = [];
+        let currentCalculation = null;
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMarketplaces();
+            setupEventListeners();
+        });
+
+        // Renderizar marketplaces
+        function renderMarketplaces() {
+            const grid = document.getElementById('marketplaceGrid');
+            grid.innerHTML = Object.values(MARKETPLACES).map(mp => `
+                <div class="marketplace-card" data-marketplace="${mp.id}">
+                    <span class="marketplace-icon">${mp.icon}</span>
+                    <div class="marketplace-name">${mp.name}</div>
+                    <div class="marketplace-commission">Comissão: ${(mp.commission * 100).toFixed(2)}%</div>
+                </div>
+            `).join('');
+
+            // Event listeners para seleção de marketplace
+            document.querySelectorAll('.marketplace-card').forEach(card => {
+                card.addEventListener('click', () => selectMarketplace(card.dataset.marketplace));
+            });
+        }
+
+        // Selecionar marketplace
+        function selectMarketplace(id) {
+            selectedMarketplace = MARKETPLACES[id];
+            
+            document.querySelectorAll('.marketplace-card').forEach(card => {
+                card.classList.toggle('active', card.dataset.marketplace === id);
+            });
+
+            showToast('success', `${selectedMarketplace.name} selecionado!`);
+        }
+
+        // Setup de event listeners
+        function setupEventListeners() {
+            // Toggle opções avançadas
+            document.getElementById('advancedToggle').addEventListener('click', function() {
+                this.classList.toggle('active');
+                const options = document.getElementById('advancedOptions');
+                options.classList.toggle('open');
+            });
+
+            // Botão calcular
+            document.getElementById('calculateBtn').addEventListener('click', calculate);
+
+            // Botão limpar
+            document.getElementById('clearBtn').addEventListener('click', clearFields);
+
+            // Botão adicionar produto
+            document.getElementById('addProductBtn').addEventListener('click', addProduct);
+
+            // Botão nova simulação
+            document.getElementById('newCalculationBtn').addEventListener('click', newCalculation);
+        }
+
+        // Calcular preço
+        function calculate() {
+            if (!selectedMarketplace) {
+                showToast('error', 'Selecione um marketplace primeiro!');
+                return;
+            }
+
+            const productName = document.getElementById('productName').value.trim();
+            const productCost = parseFloat(document.getElementById('productCost').value) || 0;
+            const quantity = parseInt(document.getElementById('quantity').value) || 1;
+            const profitMargin = parseFloat(document.getElementById('profitMargin').value) || 0;
+            const shippingCost = parseFloat(document.getElementById('shippingCost').value) || 0;
+            const ipi = parseFloat(document.getElementById('ipi').value) || 0;
+            const icmsIn = parseFloat(document.getElementById('icmsIn').value) || 0;
+            const st = parseFloat(document.getElementById('st').value) || 0;
+            const operationalCosts = parseFloat(document.getElementById('operationalCosts').value) || 0;
+            const taxRegime = document.getElementById('taxRegime').value;
+
+            // Validações
+            if (!productName) {
+                showToast('error', 'Informe o nome do produto!');
+                document.getElementById('productName').classList.add('error');
+                return;
+            }
+            document.getElementById('productName').classList.remove('error');
+
+            if (productCost <= 0) {
+                showToast('error', 'Informe o custo do produto!');
+                document.getElementById('productCost').classList.add('error');
+                return;
+            }
+            document.getElementById('productCost').classList.remove('error');
+
+            showLoading(true);
+
+            // Simulando processamento
+            setTimeout(() => {
+                // Cálculos baseados na planilha Excel
+                
+                // Custo base do produto
+                const baseCost = productCost;
+                
+                // Adicionar IPI
+                const costWithIpi = baseCost * (1 + ipi / 100);
+                
+                // Adicionar frete
+                const costWithIpiAndShipping = costWithIpi + shippingCost;
+                
+                // Custo total de entrada
+                const totalInboundCost = costWithIpiAndShipping + st + operationalCosts;
+                
+                // Margem desejada (decimal)
+                const marginDecimal = profitMargin / 100;
+                
+                // Taxas do marketplace
+                const { commission, icmsSaida, pis, cofins } = selectedMarketplace;
+                
+                // Total de taxas sobre a venda
+                const totalSalesTaxRate = commission + icmsSaida + pis + cofins;
+                
+                // Fórmula de precificação reversa:
+                // Preço = (Custo * (1 + Margem)) / (1 - Taxas)
+                const salePrice = (totalInboundCost * (1 + marginDecimal)) / (1 - totalSalesTaxRate);
+                
+                // Valores das taxas
+                const commissionValue = salePrice * commission;
+                const icmsValue = salePrice * icmsSaida;
+                const pisValue = salePrice * pis;
+                const cofinsValue = salePrice * cofins;
+                const totalSalesTaxes = commissionValue + icmsValue + pisValue + cofinsValue;
+                
+                // IRPJ e CSLL (se aplicável)
+                let irpjCsll = 0;
+                if (taxRegime === 'sim') {
+                    const netRevenue = salePrice - totalInboundCost - totalSalesTaxes;
+                    irpjCsll = netRevenue * 0.24; // 15% IRPJ + 9% CSLL
+                }
+                
+                // Lucros
+                const grossProfit = salePrice - totalInboundCost;
+                const netProfit = salePrice - totalInboundCost - totalSalesTaxes - irpjCsll;
+                const netMargin = (netProfit / salePrice) * 100;
+                
+                // Armazenar cálculo atual
+                currentCalculation = {
+                    productName,
+                    marketplace: selectedMarketplace,
+                    quantity,
+                    baseCost,
+                    totalInboundCost,
+                    salePrice,
+                    commissionValue,
+                    icmsValue,
+                    pisValue,
+                    cofinsValue,
+                    totalSalesTaxes,
+                    irpjCsll,
+                    grossProfit,
+                    netProfit,
+                    netMargin,
+                    profitMargin,
+                    shippingCost,
+                    ipi,
+                    icmsIn,
+                    st,
+                    operationalCosts
+                };
+                
+                displayResults(currentCalculation);
+                showLoading(false);
+                showToast('success', 'Cálculo realizado com sucesso!');
+            }, 800);
+        }
+
+        // Exibir resultados
+        function displayResults(calc) {
+            // Valores principais
+            document.getElementById('finalPrice').textContent = formatCurrency(calc.salePrice);
+            document.getElementById('marketplaceName').textContent = calc.marketplace.name;
+            
+            // Estrutura de custos
+            document.getElementById('costProduct').textContent = formatCurrency(calc.baseCost);
+            document.getElementById('totalCost').textContent = formatCurrency(calc.totalInboundCost);
+            document.getElementById('unitCost').textContent = formatCurrency(calc.totalInboundCost / calc.quantity);
+            
+            // Taxas do marketplace
+            document.getElementById('commission').textContent = formatCurrency(calc.commissionValue);
+            document.getElementById('salesTaxes').textContent = formatCurrency(calc.icmsValue + calc.pisValue + calc.cofinsValue);
+            document.getElementById('totalFees').textContent = formatCurrency(calc.totalSalesTaxes);
+            
+            // Lucratividade
+            const grossProfitEl = document.getElementById('grossProfit');
+            const netProfitEl = document.getElementById('netProfit');
+            const netMarginEl = document.getElementById('netMargin');
+            
+            grossProfitEl.textContent = formatCurrency(calc.grossProfit);
+            netProfitEl.textContent = formatCurrency(calc.netProfit);
+            netMarginEl.textContent = calc.netMargin.toFixed(2) + '%';
+            
+            // Aplicar classes de cor
+            grossProfitEl.className = 'result-row-value ' + (calc.grossProfit > 0 ? 'positive' : 'negative');
+            netProfitEl.className = 'result-row-value ' + (calc.netProfit > 0 ? 'positive' : 'negative');
+            netMarginEl.className = 'result-row-value ' + (calc.netMargin > 0 ? 'positive' : 'negative');
+            
+            // Tabela de detalhamento
+            const tableBody = document.getElementById('breakdownTableBody');
+            tableBody.innerHTML = `
+                <tr>
+                    <td>Custo do Produto</td>
+                    <td>Valor base do produto</td>
+                    <td style="text-align: right;">-</td>
+                    <td style="text-align: right;">${formatCurrency(calc.baseCost)}</td>
+                </tr>
+                ${calc.ipi > 0 ? `
+                <tr>
+                    <td>IPI</td>
+                    <td>Imposto sobre Produtos Industrializados</td>
+                    <td style="text-align: right;">${calc.ipi.toFixed(2)}%</td>
+                    <td style="text-align: right;">${formatCurrency(calc.baseCost * calc.ipi / 100)}</td>
+                </tr>
+                ` : ''}
+                ${calc.shippingCost > 0 ? `
+                <tr>
+                    <td>Frete</td>
+                    <td>Custo de transporte</td>
+                    <td style="text-align: right;">-</td>
+                    <td style="text-align: right;">${formatCurrency(calc.shippingCost)}</td>
+                </tr>
+                ` : ''}
+                ${calc.st > 0 ? `
+                <tr>
+                    <td>Substituição Tributária</td>
+                    <td>ST</td>
+                    <td style="text-align: right;">-</td>
+                    <td style="text-align: right;">${formatCurrency(calc.st)}</td>
+                </tr>
+                ` : ''}
+                ${calc.operationalCosts > 0 ? `
+                <tr>
+                    <td>Custos Operacionais</td>
+                    <td>Despesas operacionais</td>
+                    <td style="text-align: right;">-</td>
+                    <td style="text-align: right;">${formatCurrency(calc.operationalCosts)}</td>
+                </tr>
+                ` : ''}
+                <tr class="breakdown-total">
+                    <td colspan="3"><strong>Custo Total</strong></td>
+                    <td style="text-align: right;"><strong>${formatCurrency(calc.totalInboundCost)}</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 20px;"></td>
+                </tr>
+                <tr>
+                    <td>Comissão ${calc.marketplace.name}</td>
+                    <td>Taxa do marketplace</td>
+                    <td style="text-align: right;">${(calc.marketplace.commission * 100).toFixed(2)}%</td>
+                    <td style="text-align: right;">${formatCurrency(calc.commissionValue)}</td>
+                </tr>
+                <tr>
+                    <td>ICMS Saída</td>
+                    <td>Imposto sobre Circulação de Mercadorias</td>
+                    <td style="text-align: right;">${(calc.marketplace.icmsSaida * 100).toFixed(2)}%</td>
+                    <td style="text-align: right;">${formatCurrency(calc.icmsValue)}</td>
+                </tr>
+                <tr>
+                    <td>PIS</td>
+                    <td>Programa de Integração Social</td>
+                    <td style="text-align: right;">${(calc.marketplace.pis * 100).toFixed(2)}%</td>
+                    <td style="text-align: right;">${formatCurrency(calc.pisValue)}</td>
+                </tr>
+                <tr>
+                    <td>COFINS</td>
+                    <td>Contribuição para Financiamento da Seguridade Social</td>
+                    <td style="text-align: right;">${(calc.marketplace.cofins * 100).toFixed(2)}%</td>
+                    <td style="text-align: right;">${formatCurrency(calc.cofinsValue)}</td>
+                </tr>
+                ${calc.irpjCsll > 0 ? `
+                <tr>
+                    <td>IRPJ + CSLL</td>
+                    <td>Imposto de Renda e Contribuição Social</td>
+                    <td style="text-align: right;">24%</td>
+                    <td style="text-align: right;">${formatCurrency(calc.irpjCsll)}</td>
+                </tr>
+                ` : ''}
+                <tr class="breakdown-total">
+                    <td colspan="3"><strong>Total de Impostos e Taxas</strong></td>
+                    <td style="text-align: right;"><strong>${formatCurrency(calc.totalSalesTaxes + calc.irpjCsll)}</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="4" style="height: 20px;"></td>
+                </tr>
+                <tr class="breakdown-total" style="background: var(--success); color: white;">
+                    <td colspan="3"><strong>Preço de Venda Sugerido</strong></td>
+                    <td style="text-align: right;"><strong>${formatCurrency(calc.salePrice)}</strong></td>
+                </tr>
+                <tr class="breakdown-total" style="background: var(--primary); color: white;">
+                    <td colspan="3"><strong>Lucro Líquido Unitário</strong></td>
+                    <td style="text-align: right;"><strong>${formatCurrency(calc.netProfit)}</strong></td>
+                </tr>
+            `;
+            
+            // Exibir seção de resultados
+            document.getElementById('resultsSection').classList.add('visible');
+            
+            // Scroll suave para resultados
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Adicionar produto à lista
+        function addProduct() {
+            if (!currentCalculation) {
+                showToast('error', 'Nenhum cálculo disponível!');
+                return;
+            }
+
+            productList.push({ ...currentCalculation });
+            updateProductList();
+            showToast('success', 'Produto adicionado à lista!');
+        }
+
+        // Atualizar lista de produtos
+        function updateProductList() {
+            const listEl = document.getElementById('productList');
+            const section = document.getElementById('productListSection');
+
+            if (productList.length === 0) {
+                section.classList.remove('visible');
+                return;
+            }
+
+            section.classList.add('visible');
+
+            listEl.innerHTML = productList.map((product, index) => `
+                <div class="product-item">
+                    <span class="product-icon">${product.marketplace.icon}</span>
+                    <div class="product-info">
+                        <div class="product-name">${product.productName}</div>
+                        <div class="product-details">
+                            ${product.marketplace.name} • Qtd: ${product.quantity} • 
+                            Custo: ${formatCurrency(product.totalInboundCost)} • 
+                            Margem: ${product.netMargin.toFixed(2)}%
+                        </div>
+                    </div>
+                    <div class="product-price">${formatCurrency(product.salePrice * product.quantity)}</div>
+                    <button class="product-remove" onclick="removeProduct(${index})">Remover</button>
+                </div>
+            `).join('');
+
+            // Atualizar total
+            const total = productList.reduce((sum, p) => sum + (p.salePrice * p.quantity), 0);
+            document.getElementById('totalValue').textContent = formatCurrency(total);
+
+            // Scroll para lista
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Remover produto da lista
+        function removeProduct(index) {
+            productList.splice(index, 1);
+            updateProductList();
+            showToast('success', 'Produto removido!');
+        }
+
+        // Nova simulação
+        function newCalculation() {
+            clearFields();
+            document.getElementById('resultsSection').classList.remove('visible');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Limpar campos
+        function clearFields() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productCost').value = '';
+            document.getElementById('quantity').value = '1';
+            document.getElementById('profitMargin').value = '25';
+            document.getElementById('shippingCost').value = '0';
+            document.getElementById('ipi').value = '0';
+            document.getElementById('icmsIn').value = '0';
+            document.getElementById('st').value = '0';
+            document.getElementById('operationalCosts').value = '0';
+            document.getElementById('taxRegime').value = 'nao';
+            
+            currentCalculation = null;
+            showToast('success', 'Campos limpos!');
+        }
+
+        // Utilitários
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        function showToast(type, message) {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            const msg = document.getElementById('toastMessage');
+
+            const icons = {
+                success: '✓',
+                error: '✕',
+                warning: '⚠'
+            };
+
+            toast.className = `toast ${type}`;
+            icon.textContent = icons[type];
+            msg.textContent = message;
+
+            toast.classList.add('visible');
+
+            setTimeout(() => {
+                toast.classList.remove('visible');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
